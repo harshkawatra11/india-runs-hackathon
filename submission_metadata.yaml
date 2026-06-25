@@ -20,9 +20,9 @@ team_members:
 # ============================================================================
 # Code and reproducibility
 # ============================================================================
-github_repo: "https://github.com/<USERNAME>/india-runs-hackathon"
+github_repo: "https://github.com/harshkawatra11/india-runs-hackathon"
 
-sandbox_link: "https://<your-project>.vercel.app"
+sandbox_link: "https://india-runs-hackathon.vercel.app"
 # Next.js sandbox: runs the same ranking logic (ported to TypeScript) on a
 # <=100-candidate sample and produces a downloadable ranked CSV. See web/.
 

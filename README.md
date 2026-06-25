@@ -32,7 +32,7 @@ CPU with **no network and no LLM calls**.
 | **Compute** | CPU-only, **no GPU**, **no network**, **no LLM calls** at rank time — well inside the 5-min / 16-GB budget |
 | **Honeypots in top-100** | **0** |
 | **Explainability** | every rank ships a fact-grounded, non-hallucinated, rank-consistent reason |
-| **Live demo** | a Next.js sandbox on Vercel that runs the *same* logic in the browser |
+| **Live demo** | **[india-runs-hackathon.vercel.app](https://india-runs-hackathon.vercel.app)** — a Next.js sandbox running the *same* logic |
 
 > The naïve approach — embed every profile, embed the JD, sort by cosine — is a
 > **trap the organizers built on purpose**. This system is engineered to read the

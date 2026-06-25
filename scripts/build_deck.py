@@ -36,8 +36,8 @@ ACCENT = RGBColor(0x6D, 0x4A, 0xFF)
 # Placeholders the participant fills in before submitting.
 TEAM_NAME = "<TEAM_NAME = your Team ID>"
 TEAM_LEADER = "<TEAM_LEADER_NAME>"
-GITHUB_URL = "https://github.com/<USERNAME>/india-runs-hackathon"
-VERCEL_URL = "https://<your-project>.vercel.app"
+GITHUB_URL = "https://github.com/harshkawatra11/india-runs-hackathon"
+VERCEL_URL = "https://india-runs-hackathon.vercel.app"
 VIDEO_URL = "<demo video URL>"
 
 
