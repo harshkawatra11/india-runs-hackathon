@@ -1,0 +1,91 @@
+# Redrob Hackathon — Submission Metadata
+# Mirrors the portal metadata. Swap every <PLACEHOLDER> before submitting.
+
+# ============================================================================
+# Team identity   (Team ID == Team name, per the intro session)
+# ============================================================================
+team_name: "<TEAM_NAME = your Team ID>"
+
+primary_contact:
+  name: "<TEAM_LEADER_NAME>"
+  email: "<CONTACT_EMAIL>"
+  phone: "<+91-XXXXXXXXXX>"
+
+team_members:
+  - name: "<TEAM_LEADER_NAME>"
+    email: "<CONTACT_EMAIL>"
+    role: "Team Lead / ML Engineer"
+  # add additional members as needed
+
+# ============================================================================
+# Code and reproducibility
+# ============================================================================
+github_repo: "https://github.com/<USERNAME>/india-runs-hackathon"
+
+sandbox_link: "https://<your-project>.vercel.app"
+# Next.js sandbox: runs the same ranking logic (ported to TypeScript) on a
+# <=100-candidate sample and produces a downloadable ranked CSV. See web/.
+
+reproduce_command: "python -m engine.rank --candidates ./candidates.jsonl --out ./submission.csv"
+# Runs end-to-end in ~85s on CPU with no network. It auto-loads the committed
+# precomputed dense embeddings (artifacts/dense_embeddings.npy, 2.4 MB) for the
+# full hybrid result. Add --no-dense to force the lexical+LSA fallback (~98s),
+# which needs no artifact at all. Either path is CPU-only and offline.
+
+# ============================================================================
+# Compute environment
+# ============================================================================
+compute:
+  platform: "<e.g. Windows 11 laptop / AWS c5.2xlarge>"
+  cpu_cores: 8
+  ram_gb: 16
+  python_version: "3.10+"
+  os: "<your OS>"
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  pre_computation_required: false
+  # The committed dense-embedding cache was precomputed offline (~62 min on CPU
+  # with sentence-transformers/all-MiniLM-L6-v2). It is OPTIONAL: the ranker
+  # falls back to lexical + LSA automatically if the artifact is absent, so a
+  # valid submission can be reproduced with zero pre-computation.
+  pre_computation_time_minutes: 62
+
+# ============================================================================
+# AI tools declaration (transparency only — not penalised)
+# ============================================================================
+ai_tools_used:
+  - "Claude"
+
+ai_usage_summary: |
+  Used Claude (Claude Code) for architecture discussion, code review and
+  scaffolding while the team designed the scoring rubric, integrity checks and
+  evaluation. No candidate data was sent to any hosted LLM, and no LLM is called
+  during the ranking step — the engine is deterministic NumPy/scikit-learn.
+
+# ============================================================================
+# Approach summary
+# ============================================================================
+methodology_summary: |
+  A deterministic, explainable ranker. The JD is encoded as an auditable rubric
+  (weighted skill sets, title gates, location tiers, disqualifier rules). Each
+  candidate gets a base score from seven components — semantic similarity
+  (TF-IDF + LSA, optional MiniLM dense), role-fit, trusted-skill match,
+  experience band, company type, location and education — then three
+  multiplicative modifiers: a disqualifier penalty (consulting-only, off-track
+  title, title-chasing, ...), a behavioural availability multiplier (recency,
+  response rate, open-to-work) and an integrity multiplier that collapses
+  honeypots via date-span / experience-math / zero-usage consistency checks.
+  Title is a gate, not a feature, and skills count only when endorsed AND used —
+  so keyword stuffers lose. Reasoning is assembled from real profile facts (no
+  LLM, no hallucination). Ranks 100k candidates in ~98s on CPU; 0 honeypots in
+  the top-100.
+
+# ============================================================================
+# Declarations
+# ============================================================================
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true
+  reproduction_tested: true

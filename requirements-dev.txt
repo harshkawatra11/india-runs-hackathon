@@ -1,0 +1,10 @@
+# Development / optional extras — NOT required to reproduce submission.csv.
+-r requirements.txt
+
+pytest>=8.0                 # engine test suite
+python-pptx>=0.6.23        # builds the pitch deck from the template
+pymupdf>=1.24              # renders deck slides to PNG (preview only)
+
+# Optional dense-embedding enhancement (offline precompute only — never used
+# during the timed ranking step). Heavy (pulls torch); skip if not needed.
+sentence-transformers>=2.7

@@ -1,0 +1,42 @@
+# ---- Large data (do NOT commit the 487 MB pool) ----------------------------
+**/candidates.jsonl
+**/candidates.jsonl.gz
+data/sample_candidates.jsonl
+data/*.csv
+
+# ---- Precomputed / generated artifacts -------------------------------------
+artifacts/*.npy
+# ...but DO commit the dense-embedding cache: it's a small (2.4 MB) precomputed
+# dependency the ranker auto-loads, so Stage-3 reproduction is deterministic.
+!artifacts/dense_embeddings.npy
+artifacts/*.pdf
+artifacts/*.png
+artifacts/cache/
+
+# ---- Python ----------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.venv/
+venv/
+.mypy_cache/
+
+# ---- Node / web ------------------------------------------------------------
+web/node_modules/
+web/.next/
+web/out/
+web/.vercel/
+web/*.tsbuildinfo
+web/next-env.d.ts
+
+# ---- OS / editor -----------------------------------------------------------
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*~
+
+# Keep the macOS junk from the bundle out of git
+**/__MACOSX/
+**/.DS_Store

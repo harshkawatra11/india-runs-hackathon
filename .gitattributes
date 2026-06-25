@@ -1,0 +1,11 @@
+# Normalise line endings to LF for all text; keep known binaries untouched.
+* text=auto eol=lf
+
+*.png binary
+*.pptx binary
+*.pdf binary
+*.npy binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
