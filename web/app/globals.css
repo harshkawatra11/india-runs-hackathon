@@ -2,46 +2,220 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===========================================================================
+   Redrob Ranker — design tokens
+   "Editorial Precision": deep ink base, one owned indigo accent, saffron for
+   peaks, instrument-grade data viz. Colors are stored as space-separated RGB
+   channels so Tailwind opacity utilities (bg-accent/10) work against tokens.
+   =========================================================================== */
 :root {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  /* surfaces / neutrals (warm-cool deep slate, never pure black) */
+  --bg: 10 11 15;            /* #0A0B0F page */
+  --bg-2: 13 15 21;          /* #0D0F15 alt section */
+  --surface: 20 22 29;       /* #14161D card */
+  --surface-2: 26 29 39;     /* #1A1D27 raised / hover */
+  --inset: 15 17 23;         /* #0F1117 wells, code */
+  --border: 32 35 46;        /* #20232E hairline */
+  --border-strong: 46 50 66; /* #2E3242 */
+
+  /* text */
+  --text: 244 245 248;       /* #F4F5F8 primary */
+  --text-2: 176 180 194;     /* #B0B4C2 secondary */
+  --text-3: 124 130 146;     /* #7C8292 tertiary / captions */
+
+  /* brand + semantic */
+  --accent: 113 120 245;     /* #7178F5 refined indigo (owned, not neon) */
+  --accent-2: 90 210 196;    /* #5AD2C4 teal for data strokes */
+  --saffron: 233 180 76;     /* #E9B44C peak / #1 highlight (India nod) */
+  --good: 61 214 140;        /* #3DD68C strong / positive */
+  --warn: 235 168 66;        /* #EBA842 concern */
+  --bad: 242 97 107;         /* #F2616B honeypot / danger */
+
+  /* score-tier ramp (low -> strong) */
+  --tier-low: 124 130 146;
+  --tier-mid: 235 168 66;
+  --tier-good: 90 210 196;
+  --tier-strong: 61 214 140;
+
+  /* radius */
+  --r-sm: 0.5rem;
+  --r-md: 0.75rem;
+  --r-lg: 1rem;
+  --r-xl: 1.25rem;
+  --r-2xl: 1.5rem;
+
+  /* elevation (layered, subtle — not one big blur) */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.30), 0 1px 1px rgb(0 0 0 / 0.20);
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.40), 0 2px 6px -2px rgb(0 0 0 / 0.30);
+  --shadow-lg: 0 18px 40px -12px rgb(0 0 0 / 0.55), 0 8px 16px -8px rgb(0 0 0 / 0.40);
+  --glow-accent: 0 0 0 1px rgb(var(--accent) / 0.25), 0 8px 30px -8px rgb(var(--accent) / 0.35);
+
+  /* motion */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-1: 140ms;
+  --dur-2: 240ms;
+  --dur-3: 420ms;
+
+  /* fonts (wired by next/font in layout.tsx) */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-mono-jb), ui-monospace, "SFMono-Regular", monospace;
 }
 
-html {
-  scroll-behavior: smooth;
+/* ----------------------------------------------------------------------- */
+@layer base {
+  * {
+    border-color: rgb(var(--border));
+  }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background-color: rgb(var(--bg));
+    color: rgb(var(--text));
+    font-family: var(--font-sans);
+    font-feature-settings: "cv05", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  /* tabular figures everywhere data lives */
+  .tnum, .font-mono, th, td {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+  ::selection {
+    background: rgb(var(--accent) / 0.30);
+    color: rgb(var(--text));
+  }
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.02em;
+  }
+  /* visible, on-brand focus ring for keyboard users */
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
-body {
-  @apply bg-ink text-slate-200 antialiased;
-  background-image:
-    radial-gradient(60rem 60rem at 80% -10%, rgba(124, 92, 255, 0.12), transparent 60%),
-    radial-gradient(50rem 50rem at -10% 20%, rgba(34, 211, 238, 0.08), transparent 55%);
-  background-attachment: fixed;
+/* ----------------------------------------------------------------------- */
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-[72rem] px-5 sm:px-8;
+  }
+
+  /* surfaces */
+  .surface {
+    background-color: rgb(var(--surface));
+    border: 1px solid rgb(var(--border));
+    border-radius: var(--r-xl);
+  }
+  .surface-2 {
+    background-color: rgb(var(--surface-2));
+    border: 1px solid rgb(var(--border));
+    border-radius: var(--r-lg);
+  }
+  .surface-hover {
+    transition: border-color var(--dur-2) var(--ease-out),
+      background-color var(--dur-2) var(--ease-out),
+      transform var(--dur-2) var(--ease-out);
+  }
+  .surface-hover:hover {
+    border-color: rgb(var(--border-strong));
+    background-color: rgb(var(--surface-2));
+  }
+
+  /* eyebrow / section label */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.18em];
+    color: rgb(var(--text-3));
+  }
+
+  /* pills / badges */
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium;
+    border: 1px solid rgb(var(--border));
+    background: rgb(var(--surface-2));
+    color: rgb(var(--text-2));
+  }
+
+  /* buttons */
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold;
+    transition: transform var(--dur-1) var(--ease-out),
+      background-color var(--dur-2) var(--ease-out),
+      border-color var(--dur-2) var(--ease-out), box-shadow var(--dur-2) var(--ease-out);
+  }
+  .btn:active { transform: translateY(1px) scale(0.99); }
+  .btn-primary {
+    background: rgb(var(--accent));
+    color: #fff;
+    box-shadow: var(--shadow-sm);
+  }
+  .btn-primary:hover { box-shadow: var(--glow-accent); }
+  .btn-primary:disabled { opacity: 0.5; box-shadow: none; cursor: not-allowed; }
+  .btn-ghost {
+    border: 1px solid rgb(var(--border-strong));
+    background: rgb(var(--surface-2));
+    color: rgb(var(--text));
+  }
+  .btn-ghost:hover { border-color: rgb(var(--accent) / 0.6); }
+
+  .input {
+    @apply rounded-lg px-3 py-2 text-sm outline-none;
+    background: rgb(var(--inset));
+    border: 1px solid rgb(var(--border));
+    color: rgb(var(--text));
+  }
+  .input:focus { border-color: rgb(var(--accent)); }
+  .input::placeholder { color: rgb(var(--text-3)); }
+
+  /* hairline divider */
+  .rule { height: 1px; background: rgb(var(--border)); }
 }
 
-.card {
-  @apply rounded-2xl border border-line bg-panel/70 backdrop-blur-sm;
+/* ----------------------------------------------------------------------- */
+@layer utilities {
+  .text-display { color: rgb(var(--text)); }
+  .text-2 { color: rgb(var(--text-2)); }
+  .text-3 { color: rgb(var(--text-3)); }
+
+  /* refined accent text — a controlled duotone, not the old rainbow */
+  .accent-text {
+    background: linear-gradient(180deg, rgb(var(--text)) 0%, rgb(var(--accent) / 0.95) 130%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .saffron-text { color: rgb(var(--saffron)); }
+
+  /* ambient grid + grain for depth (no gradient blobs) */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgb(var(--border) / 0.5) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--border) / 0.5) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(60% 50% at 50% 0%, #000 0%, transparent 75%);
+    mask-image: radial-gradient(60% 50% at 50% 0%, #000 0%, transparent 75%);
+  }
+
+  .thin-scroll::-webkit-scrollbar { width: 9px; height: 9px; }
+  .thin-scroll::-webkit-scrollbar-thumb {
+    background: rgb(var(--border-strong)); border-radius: 9999px;
+    border: 2px solid rgb(var(--surface));
+  }
+  .thin-scroll::-webkit-scrollbar-track { background: transparent; }
 }
 
-.pill {
-  @apply inline-flex items-center gap-1 rounded-full border border-line bg-panel2 px-2.5 py-0.5 text-xs font-medium text-muted;
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
-
-.gradient-text {
-  @apply bg-gradient-to-r from-accent via-fuchsia-400 to-accent2 bg-clip-text text-transparent;
-}
-
-.btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition;
-}
-.btn-primary {
-  @apply btn bg-accent text-white hover:bg-accent/85 disabled:opacity-50;
-}
-.btn-ghost {
-  @apply btn border border-line bg-panel2 text-slate-200 hover:border-accent/60;
-}
-
-/* thin scrollbar for the rank table */
-.thin-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
-.thin-scroll::-webkit-scrollbar-thumb { @apply rounded-full bg-line; }
-.thin-scroll::-webkit-scrollbar-track { background: transparent; }
